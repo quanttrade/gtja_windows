@@ -1,0 +1,5 @@
+1476864298260	geckodriver	INFO	Listening on 127.0.0.1:4546
+1476864299209	hyper::server	ERROR	Peer Name error: Error { repr: Custom(Custom { kind: InvalidInput, error: StringError("invalid argument") }) }
+1476864300216	hyper::server	ERROR	Peer Name error: Error { repr: Custom(Custom { kind: InvalidInput, error: StringError("invalid argument") }) }
+1476864300218	hyper::server	ERROR	Peer Name error: Error { repr: Custom(Custom { kind: InvalidInput, error: StringError("invalid argument") }) }
+
