@@ -152,7 +152,7 @@ if __name__=='__main__':
 
     browser.get(url)
     all_data=pd.DataFrame()
-    for j in range(96):
+    for j in range(1):
         st=datetime.datetime.now()
 
         all_dates=browser.find_elements_by_class_name("has-data")
@@ -187,7 +187,13 @@ if __name__=='__main__':
     all_data=all_data.drop('name',axis=1)
     all_data=all_data[all_data['category']=='%s'%category]
     all_data=all_data.drop_duplicates()
-    print all_data
+
+
+    max_exist_date=pd.read_sql_query('select max(update_date) as max_date from gtja_intern.%s_volume_data'%category,engine)
+    max_date=pd.to_datetime(max_exist_date['max_date'].values[0])
+    print max_date
+    all_data=all_data[all_data['update_date']>max_date]
+    print all_data.sort('update_date')
     #all_data.to_csv("all_data_Cu.csv",encoding='gbk',index=False)
     all_data.to_sql("%s_volume_data"%category,engine,index=False,if_exists='append')
     browser.close()

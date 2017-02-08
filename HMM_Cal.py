@@ -111,6 +111,7 @@ def hmm_weight(df,data_raw,day,n_components,plot=False):
         r_1 = np.array(np.array(np.log(train_df['close'][1:])) - np.array(np.log(train_df['close'][:-1])))[4:]
 
 
+
         r_range = np.array((np.array(np.log(train_df['high']))
                    - np.array(np.log(train_df['low']))))[5:]
 
