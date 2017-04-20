@@ -20,7 +20,7 @@ def distance(p1,p2):
     return np.sqrt(np.sum(((p1-p2)**2)))
 
 #构造一个网格用于存储X和Y中各点之间的欧氏距离
-@jit
+@jit(nopython=True)
 def grid(X,Y):
     #当列数为1时
     if X.shape[0]==X.size:
@@ -37,16 +37,22 @@ def grid(X,Y):
         wy=Y.shape[1]
 
 
-    X=X.reshape((lx,wx))
-    Y=Y.reshape((ly,wy))
+    # X=X.reshape((lx,wx))
+    # Y=Y.reshape((ly,wy))
 
     if wx!=wy:
         raise IndexError('Wrong X and Y dimension')
 
-    for k in range(wx):
-        s=np.std(X[:,k])
-        X[:,k]=X[:,k]/s
-        Y[:,k]=Y[:,k]/s
+    ws=np.arange(wx)
+    for k in ws:
+        s=np.std(X[0:lx,k])
+        me_x=np.mean(X[0:lx,k])
+        me_y=np.mean(Y[0:ly,k])
+        X[:,k]=(X[0:lx,k]-me_x)/s
+        Y[:,k]=(Y[0:ly,k]-me_y)/s
+        # X[:,k]=X[:,k]/s
+        # Y[:,k]=Y[:,k]/s
+
 
     g=np.zeros((lx,ly))
     for i in range(lx):
@@ -58,7 +64,7 @@ def grid(X,Y):
             g[i,j]=dis
     return g
 #X是最近一段日期的序列
-@jit
+@jit(nopython=True)
 def dtw(X,Y):
     g=grid(X,Y)
     dx=g.shape[0]
@@ -77,19 +83,18 @@ def dtw(X,Y):
                 d1=g_1[i,j-1]
                 d2=g_1[i-1,j]
                 d3=g_1[i-1,j-1]
-                d_min=np.min((d1,d2,d3))
+                d_min=min(d1,d2,d3)
                 g_1[i,j]=g[i,j]+d_min
     return g_1
 
-@jit
+@jit(nopython=True)
 def min_dis(X,Y):
     g_1=dtw(X,Y)
     m=g_1.shape[0]
     n=g_1.shape[1]
     d1=g_1[m-1,:]
     d2=g_1[:,n-1]
-    d1=list(d1)
-    d2=list(d2)
-    d1.extend(d2)
-    d_min=np.min(d1)
+    min_d1=np.min(d1)
+    min_d2=np.min(d2)
+    d_min=min(min_d1,min_d2)
     return d_min

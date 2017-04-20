@@ -136,7 +136,7 @@ def month_data(all_dates,browser,file_path,category):
 if __name__=='__main__':
     #conn = psycopg2.connect(database="gtja_intern", user="postgres", password="1994050306", host="localhost", port="5432")
     #engine = create_engine("postgresql+psycopg2://postgres:1994050306@localhost:5432/gtja_intern")
-    engine = create_engine("mysql+pymysql://liyuefan:1994050306@localhost/gtja_intern?charset=utf8")
+    # engine = create_engine("mysql+pymysql://liyuefan:1994050306@localhost/gtja_intern?charset=utf8")
     file_path='/Users/liyuefan/Downloads/data.csv'
     category='al'
     #engine = pymysql.connect(host='localhost',user='liyuefan',passwd='1994050306', db='gtja_intern', charset="utf8")
@@ -188,13 +188,12 @@ if __name__=='__main__':
     all_data=all_data[all_data['category']=='%s'%category]
     all_data=all_data.drop_duplicates()
 
-
     max_exist_date=pd.read_sql_query('select max(update_date) as max_date from gtja_intern.%s_volume_data'%category,engine)
     max_date=pd.to_datetime(max_exist_date['max_date'].values[0])
     print max_date
     all_data=all_data[all_data['update_date']>max_date]
     print all_data.sort('update_date')
-    #all_data.to_csv("all_data_Cu.csv",encoding='gbk',index=False)
+    # all_data.to_csv("all_data_Cu.csv",encoding='gbk',index=False)
     all_data.to_sql("%s_volume_data"%category,engine,index=False,if_exists='append')
     browser.close()
     print 'done!'
